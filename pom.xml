@@ -10,7 +10,7 @@
   <packaging>war</packaging>
 
   <name>TODO Maven Webapp</name>
-  
+
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

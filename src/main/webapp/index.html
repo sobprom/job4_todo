@@ -1,5 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css">
+    <title>TODO</title>
+</head>
 <body>
-<h2>Hello World!</h2>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<h3 align="center">
+    Планировщик.
+</h3>
+<div class="container">
+    <div class="row">
+        <form>
+            <div class="form-group">
+                <label for="taskName">Название задачи</label>
+                <input type="text" class="form-control" id="taskName" placeholder="Название задачи">
+            </div>
+            <div class="form-group">
+                <label for="taskInfo">Описание задачи</label>
+                <textarea class="form-control" id="taskInfo" rows="3" placeholder="Описание задачи"></textarea>
+            </div>
+            <div class="row float-right">
+                <button type="button" class="btn btn-success" id="taskAdd" disabled>Добавить</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Показать все</label>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 120px;">Cрок</th>
+                <th>Название</th>
+                <th>Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>17.09.2020</td>
+                <td>
+                    <span>Выучить Hibernate</span>
+                </td>
+                <td>
+                    <input type="checkbox" class="form-check-input" id="s1">
+                    <label class="form-check-label" for="s1">Выполненно</label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
 </body>
 </html>
