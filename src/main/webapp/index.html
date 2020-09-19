@@ -32,7 +32,19 @@
 
     function addTask() {
         $('#taskAdd').click(function () {
-
+            var request = {
+                name: $('#taskName').val(),
+            }
+            console.log(JSON.stringify(request));
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert(this.responseText);
+                }
+            };
+            xhttp.open("POST", "http://localhost:8080/todo", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify(request));
         });
     }
 
@@ -81,9 +93,6 @@
                     В процессе
                 </td>
                 <td>
-                    <button type="button" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-search"></span> Описание
-                    </button>
                     <button type="button" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-edit"></span> Редактировать
                     </button>
