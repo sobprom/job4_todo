@@ -1,5 +1,7 @@
 package ru.job4j.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,6 +10,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "items")
 public class Item {
