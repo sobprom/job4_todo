@@ -3,12 +3,10 @@
 <html lang="en">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="main.css">
     <title>TODO</title>
 </head>
@@ -21,10 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 
 <h3 align="center">
     Планировщик.
@@ -40,8 +35,11 @@
                 <label for="taskInfo">Описание задачи</label>
                 <textarea class="form-control" id="taskInfo" rows="3" placeholder="Описание задачи"></textarea>
             </div>
-            <div class="row float-right">
-                <button type="button" class="btn btn-success" id="taskAdd" disabled>Добавить</button>
+            <div class="form-group">
+                <button type="button" class="btn btn-success" id="taskAdd" disabled>
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Добавить
+                </button>
             </div>
         </form>
     </div>
@@ -56,6 +54,7 @@
                 <th style="width: 120px;">Cрок</th>
                 <th>Название</th>
                 <th>Статус</th>
+                <th>Действие</th>
             </tr>
             </thead>
             <tbody>
@@ -65,8 +64,21 @@
                     <span>Выучить Hibernate</span>
                 </td>
                 <td>
-                    <input type="checkbox" class="form-check-input" id="s1">
-                    <label class="form-check-label" for="s1">Выполненно</label>
+                    В процессе
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-search"></span> Посмотреть
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-edit"></span> Редактировать
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-check"></span> Выполнить
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"></span> Удалить
+                    </button>
                 </td>
             </tr>
             </tbody>
