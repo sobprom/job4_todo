@@ -1,9 +1,18 @@
 .row  form {
-    width: 100%;
+    width: 70%;
 }
 .table .form-check-input {
     margin-left: 0;
 }
 .table .form-check-label {
     margin-left: 1rem;
+}
+.form-group {
+    width: 60%;
+}
+.form-inline .form-control {
+    width: 70%;
+}
+.form-check-label {
+    margin-top: 30px;
 }

@@ -19,6 +19,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
+<script>
+    function validate() {
+        $(".form-control").keyup(function () {
+            if (!($("#taskName").val() === "")) {
+                $("#taskAdd").prop('disabled', false);
+            } else {
+                $("#taskAdd").prop('disabled', true);
+            }
+        });
+    }
+
+    function addTask() {
+        $('#taskAdd').click(function () {
+
+        });
+    }
+
+    $(document).ready(function () {
+        validate();
+        addTask();
+    });
+</script>
 
 
 <h3 align="center">
@@ -26,21 +48,15 @@
 </h3>
 <div class="container">
     <div class="row">
-        <form>
+        <form class="form-inline">
             <div class="form-group">
-                <label for="taskName">Название задачи</label>
-                <input type="text" class="form-control" id="taskName" placeholder="Название задачи">
+                <label for="taskName">Описание задачи</label>
+                <input type="text" class="form-control" id="taskName" placeholder="Описание задачи">
             </div>
-            <div class="form-group">
-                <label for="taskInfo">Описание задачи</label>
-                <textarea class="form-control" id="taskInfo" rows="3" placeholder="Описание задачи"></textarea>
-            </div>
-            <div class="form-group">
-                <button type="button" class="btn btn-success" id="taskAdd" disabled>
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Добавить
-                </button>
-            </div>
+            <button type="button" class="btn btn-success" id="taskAdd" disabled>
+                <span class="glyphicon glyphicon-plus"></span>
+                Добавить
+            </button>
         </form>
     </div>
     <div class="row">
@@ -51,7 +67,6 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th style="width: 120px;">Cрок</th>
                 <th>Название</th>
                 <th>Статус</th>
                 <th>Действие</th>
@@ -59,7 +74,6 @@
             </thead>
             <tbody>
             <tr>
-                <td>17.09.2020</td>
                 <td>
                     <span>Выучить Hibernate</span>
                 </td>
@@ -68,7 +82,7 @@
                 </td>
                 <td>
                     <button type="button" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-search"></span> Посмотреть
+                        <span class="glyphicon glyphicon-search"></span> Описание
                     </button>
                     <button type="button" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-edit"></span> Редактировать
@@ -84,7 +98,6 @@
             </tbody>
         </table>
     </div>
-</div>
 </div>
 </body>
 </html>
