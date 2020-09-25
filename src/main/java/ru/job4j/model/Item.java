@@ -74,6 +74,10 @@ public class Item {
         this.errorMsg = errorMsg;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
