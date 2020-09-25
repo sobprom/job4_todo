@@ -6,8 +6,8 @@ public interface Store extends AutoCloseable {
     /**
      * Adds item to store.
      *
-     * @param entity model.
-     * @return stored model.
+     * @param item new item.
+     * @return stored item.
      */
     Item add(Item item);
 
@@ -30,15 +30,15 @@ public interface Store extends AutoCloseable {
      * Updates the item in store. If not exists then adds to store.
      *
      * @param item new item.
-     * @return model was updated.
+     * @return item was updated.
      */
     Item update(Item item);
 
     /**
-     * Deletes the model from store.
+     * Deletes the item from store.
      *
      * @param item item.
-     * @return model was deleted. If not exists return null.
+     * @return item was deleted. If not exists return null.
      */
     Item delete(Item item);
 }

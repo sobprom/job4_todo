@@ -2,17 +2,13 @@ package ru.job4j.model;
 
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.Transaction;
 
 import java.util.Collection;
 
 public class HBStore implements Store {
     private static final Store INSTANCE = new HBStore();
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-            .configure().build();
+
 
     private HBStore() {
 
@@ -24,14 +20,17 @@ public class HBStore implements Store {
 
     @Override
     public Item add(Item item) {
-        try (SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory()) {
-            Session session = sf.openSession();
-            session.beginTransaction();
+        final Session session = HibernateUtil.getSessionFactory().openSession();
+        final Transaction tx = session.beginTransaction();
+        try {
             session.save(item);
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
             item.setErrorMsg(e.getMessage());
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
         return item;
     }
@@ -57,7 +56,7 @@ public class HBStore implements Store {
     }
 
     @Override
-    public void close() throws Exception {
-        StandardServiceRegistryBuilder.destroy(registry);
+    public void close()  {
+
     }
 }

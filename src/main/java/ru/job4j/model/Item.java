@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Date;
+import javax.persistence.Transient;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -15,23 +18,24 @@ import java.util.Objects;
 @Table(name = "items")
 public class Item {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "created")
-    private Date created;
+    @Column(name = "created", nullable = false)
+    private Timestamp created = new Timestamp(Calendar.getInstance().getTime().getTime());
 
     @Column(name = "done")
     private boolean done;
 
+    @Transient
     private String errorMsg;
 
 
     public Item(String description) {
         this.description = description;
-        this.created = new Date(Calendar.getInstance().getTime().getTime());
     }
 
     public Item() {
@@ -46,11 +50,11 @@ public class Item {
         this.description = description;
     }
 
-    public Date getCreated() {
+    public Timestamp getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Timestamp created) {
         this.created = created;
     }
 
