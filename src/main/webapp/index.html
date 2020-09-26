@@ -37,75 +37,128 @@
                 description: $('#taskName').val(),
                 action: "add"
             }
-            console.log(JSON.stringify(request));
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var answer = JSON.parse(this.responseText);
-                    if (answer.errorMsg != null) {
-                        alert('Сервес временно недоступен, попробуйте позже');
-                        console.log(answer);
-                    }
-                }
-            };
-            xhttp.open("POST", "http://localhost:8080/todo/actions", true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify(request));
+            var answer = sendJSON(request);
+            answer !== '' ? alert(answer) : '';
         });
+    }
+
+    function sendJSON(request) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var answer = JSON.parse(this.responseText);
+                if (answer.errorMsg != null) {
+                    return 'Внутренняя ошибка БД, попробуйте позже';
+                }
+            }
+        };
+        xhttp.open("POST", "http://localhost:8080/todo/actions", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(JSON.stringify(request));
     }
 
     function showAllTasks() {
         $.getJSON("http://localhost:8080/todo/actions")
             .done(function (json) {
-                console.log(json);
                 var body = "";
                 json.forEach(function callback(value, index, json) {
                     body += getRow(value);
                 });
-                console.log(body);
                 $(body).prependTo($('#tasks'));
+                actions();
             })
             .fail(function (jqxhr, textStatus, error) {
                 let err = textStatus + ", " + error;
-                console.log("Request Failed: " + err);
             });
     }
 
     function getRow(value) {
-        return "<tr>"
+
+        return `<tr id = "${value.id}">`
             + getDescription(value)
             + getStatus(value)
-            + getActions()
-            + "</tr>";
+            + getActions(value)
+            + '</tr>';
     }
 
     function getDescription(value) {
-        return "<td><span>" + value.description + "</span></td>";
+        return `<td class="description"><span>${value.description}</span></td>`;
     }
 
     function getStatus(value) {
-        return "<td><span>" + value.done + "</span></td>";
+        var cls = value.done ? "glyphicon glyphicon-ok" : "glyphicon glyphicon-dashboard";
+        var status = value.done ? 'Выполнена' : 'В работе';
+        return `<td class="status"><span class="${cls}"></span> ${status}</td>`;
     }
 
     function getActions() {
         return `
             <td>
-                <button type="button" class="btn btn-default btn-sm">
+                <button type="button" class="btn btn-default btn-sm edit">
                     <span class="glyphicon glyphicon-edit"></span> Редактировать
                 </button>
-                <button type="button" class="btn btn-default btn-sm">
+                <button type="button" class="btn btn-default btn-sm done">
                     <span class="glyphicon glyphicon-check"></span> Выполнить
                 </button>
-                <button type="button" class="btn btn-default btn-sm">
+                <button type="button" class="btn btn-default btn-sm delete">
                     <span class="glyphicon glyphicon-trash"></span> Удалить
                 </button>
             </td>`;
+    }
+
+    function editItem() {
+        $('button.edit').click(function () {
+            var parentId = $(this).parent().parent().attr('id');
+            var oldDescription = $(`#${parentId} .description`).text();
+            var descr = prompt("Введите название задачи", oldDescription);
+            $(`#${parentId} .description`).text(descr);
+            var request = {
+                id: parentId,
+                description: descr,
+                action: "edit"
+            }
+            sendJSON(request);
+        });
+    }
+
+    function deleteItem() {
+        $('button.delete').click(function () {
+            if (confirm("Удалить задачу?")) {
+                var parentId = $(this).parent().parent().attr('id');
+                $(`#${parentId}`).remove();
+                var request = {
+                    id: parentId,
+                    action: "delete"
+                }
+                sendJSON(request);
+            }
+        });
+    }
+    function doneItems(){
+        $('button.done').click(function () {
+            if (confirm("Отметить задачу как выполненную?")) {
+                var parentId = $(this).parent().parent().attr('id');
+                var request = {
+                    id: parentId,
+                    done : true,
+                    action: "edit"
+                }
+                $(`#${parentId} .status`).html(getStatus(request));
+                sendJSON(request);
+            }
+        });
+    }
+    function actions(){
+        editItem();
+        deleteItem();
+        doneItems();
     }
 
     $(document).ready(function () {
         validate();
         addTask();
         showAllTasks();
+
     });
 </script>
 

@@ -33,6 +33,9 @@ public class Item {
     @Transient
     private String errorMsg;
 
+    @Transient
+    private String action;
+
 
     public Item(String description) {
         this.description = description;
@@ -76,6 +79,14 @@ public class Item {
 
     public int getId() {
         return id;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     @Override
