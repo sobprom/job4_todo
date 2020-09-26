@@ -94,7 +94,7 @@
     function getActions() {
         return `
             <td>
-                <button type="button" class="btn btn-default btn-sm edit">
+                <button type="button" class="btn btn-default btn-sm update">
                     <span class="glyphicon glyphicon-edit"></span> Редактировать
                 </button>
                 <button type="button" class="btn btn-default btn-sm done">
@@ -106,8 +106,8 @@
             </td>`;
     }
 
-    function editItem() {
-        $('button.edit').click(function () {
+    function updateItem() {
+        $('button.update').click(function () {
             var parentId = $(this).parent().parent().attr('id');
             var oldDescription = $(`#${parentId} .description`).text();
             var descr = prompt("Введите название задачи", oldDescription);
@@ -115,7 +115,7 @@
             var request = {
                 id: parentId,
                 description: descr,
-                action: "edit"
+                action: "update"
             }
             sendJSON(request);
         });
@@ -140,8 +140,9 @@
                 var parentId = $(this).parent().parent().attr('id');
                 var request = {
                     id: parentId,
+                    description : $(`#${parentId} .description`).text(),
                     done : true,
-                    action: "edit"
+                    action: "update"
                 }
                 $(`#${parentId} .status`).html(getStatus(request));
                 sendJSON(request);
@@ -149,7 +150,7 @@
         });
     }
     function actions(){
-        editItem();
+        updateItem();
         deleteItem();
         doneItems();
     }

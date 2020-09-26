@@ -29,16 +29,16 @@ public class ValidateService implements Validate {
 
     @Override
     public Item findById(Item item) {
-        return null;
+        return store.findById(item);
     }
 
     @Override
     public Item update(Item item) {
-        return null;
+        return store.update(item);
     }
 
     @Override
-    public Item delete(Item model) {
-        return null;
+    public Item delete(Item item) {
+        return store.delete(item);
     }
 }

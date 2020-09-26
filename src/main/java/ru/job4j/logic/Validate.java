@@ -43,8 +43,8 @@ public interface Validate {
     /**
      * Deletes the item from store.
      *
-     * @param model item.
+     * @param item item.
      * @return item was deleted. If not exists return null.
      */
-    Item delete(Item model);
+    Item delete(Item item);
 }

@@ -1,8 +1,8 @@
 package ru.job4j.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.job4j.logic.Validate;
-import ru.job4j.logic.ValidateService;
+import ru.job4j.logic.Dispatcher;
+import ru.job4j.logic.DispatcherImpl;
 import ru.job4j.model.Item;
 
 import javax.servlet.ServletException;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class TodoServlet extends HttpServlet {
-    private final Validate validate = ValidateService.getInstance();
+    private final Dispatcher dispatcher = DispatcherImpl.getDispatcher();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class TodoServlet extends HttpServlet {
         new ObjectMapper()
                 .writeValue(
                         writer,
-                        validate.findAll()
+                        dispatcher.findAll()
                 );
         writer.flush();
     }
@@ -37,7 +37,7 @@ public class TodoServlet extends HttpServlet {
         new ObjectMapper()
                 .writeValue(
                         writer,
-                        validate.add(item)
+                        dispatcher.crud(item)
                 );
         writer.flush();
     }
