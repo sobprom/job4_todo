@@ -19,7 +19,9 @@ public class ValidateService implements Validate {
 
     @Override
     public Item add(Item item) {
-        return store.add(item);
+        return item.getDescription() == null || item.getDescription().isBlank()
+                ? setError("Empty description")
+                : store.add(item);
     }
 
     @Override
@@ -29,16 +31,30 @@ public class ValidateService implements Validate {
 
     @Override
     public Item findById(Item item) {
-        return store.findById(item);
+        return item.getId() < 0
+                ? setError("Illegal id")
+                : store.findById(item);
     }
 
     @Override
     public Item update(Item item) {
-        return store.update(item);
+        return item.getDescription() == null
+                || item.getDescription().isBlank()
+                || item.getId() < 0
+                ? setError("Empty description or illegal id")
+                : store.update(item);
     }
 
     @Override
     public Item delete(Item item) {
-        return store.delete(item);
+        return item.getId() < 0
+                ? setError("Illegal id")
+                : store.delete(item);
+    }
+
+    private Item setError(String msg) {
+        Item rsl = new Item();
+        rsl.setErrorMsg(msg);
+        return rsl;
     }
 }

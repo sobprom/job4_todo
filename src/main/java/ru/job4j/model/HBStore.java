@@ -58,12 +58,34 @@ public class HBStore implements Store {
 
     @Override
     public Item update(Item item) {
-        return null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            final Transaction tx = session.beginTransaction();
+            try {
+                session.update(item);
+                session.getTransaction().commit();
+                session.close();
+            } catch (Exception e) {
+                item.setErrorMsg(e.getMessage());
+                session.getTransaction().rollback();
+            }
+        }
+        return item;
     }
 
     @Override
     public Item delete(Item item) {
-        return null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            final Transaction tx = session.beginTransaction();
+            try {
+                session.delete(item);
+                session.getTransaction().commit();
+                session.close();
+            } catch (Exception e) {
+                item.setErrorMsg(e.getMessage());
+                session.getTransaction().rollback();
+            }
+        }
+        return item;
     }
 
     @Override

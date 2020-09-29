@@ -2,7 +2,6 @@ package ru.job4j.logic;
 
 import ru.job4j.model.Item;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -16,7 +15,7 @@ public class DispatcherImpl implements Dispatcher {
         init();
     }
 
-    public void init() {
+    private void init() {
         this.load("update", validate::update);
         this.load("add", validate::add);
         this.load("delete", validate::delete);
@@ -36,12 +35,13 @@ public class DispatcherImpl implements Dispatcher {
     }
 
     @Override
-    public Item crud(Item item) {
-        return getDispatch().get(item.getAction()).apply(item);
-    }
-
-    @Override
-    public Collection<Item> findAll() {
-        return validate.findAll();
+    public Item apply(Item item) {
+        Item rsl = new Item();
+        if (getDispatch().get(item.getAction()) != null) {
+            rsl = getDispatch().get(item.getAction()).apply(item);
+        } else {
+            rsl.setErrorMsg("Illegal action name");
+        }
+        return rsl;
     }
 }
