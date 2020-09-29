@@ -21,43 +21,22 @@
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
 <script>
-    function validate() {
-        $(".form-control").keyup(function () {
-            if (!($("#taskName").val() === "")) {
-                $("#taskAdd").prop('disabled', false);
-            } else {
-                $("#taskAdd").prop('disabled', true);
-            }
-        });
-    }
 
-    function addTask() {
-        $('#taskAdd').click(function () {
-            var request = {
-                description: $('#taskName').val(),
-                action: "add"
-            }
-            var answer = sendJSON(request);
-            answer !== '' ? alert(answer) : '';
-        });
-    }
 
-    function sendJSON(request) {
+    function sendJSON(request, func) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var answer = JSON.parse(this.responseText);
-                if (answer.errorMsg != null) {
-                    return 'Внутренняя ошибка БД, попробуйте позже';
-                }
+                func(JSON.parse(this.responseText))
             }
         };
         xhttp.open("POST", "http://localhost:8080/todo/actions", true);
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.send(JSON.stringify(request));
+
     }
 
-    function showAllTasks() {
+    function getAllTasks() {
         $.getJSON("http://localhost:8080/todo/actions")
             .done(function (json) {
                 var body = "";
@@ -91,74 +70,141 @@
         return `<td class="status"><span class="${cls}"></span> ${status}</td>`;
     }
 
-    function getActions() {
+    function getActions(value) {
+        var btn = value.done ?
+            ` <button type="button" class="btn btn-default btn-sm open change-status">
+                <span class="glyphicon glyphicon-expand"></span> Заново
+            </button> `
+            :
+            ` <button type="button" class="btn btn-default btn-sm done change-status">
+                <span class="glyphicon glyphicon-check"></span> Выполнить
+            </button> `
         return `
-            <td>
+            <td class="actions">
                 <button type="button" class="btn btn-default btn-sm update">
                     <span class="glyphicon glyphicon-edit"></span> Редактировать
                 </button>
-                <button type="button" class="btn btn-default btn-sm done">
-                    <span class="glyphicon glyphicon-check"></span> Выполнить
-                </button>
+               ${btn}
                 <button type="button" class="btn btn-default btn-sm delete">
                     <span class="glyphicon glyphicon-trash"></span> Удалить
                 </button>
             </td>`;
     }
 
-    function updateItem() {
+    function validate() {
+        $(".form-control").keyup(function () {
+            if (!($("#taskName").val() === "")) {
+                $("#taskAdd").prop('disabled', false);
+            } else {
+                $("#taskAdd").prop('disabled', true);
+            }
+        });
+    }
+
+    function sendAdd() {
+        $('#taskAdd').click(function () {
+            var request = {
+                description: $('#taskName').val(),
+                action: "add"
+            }
+            sendJSON(request, addTask);
+        });
+    }
+
+    function addTask(answer) {
+        if (answer.errorMsg == null) {
+            $('#tasks').append(getRow(answer));
+            actions();
+        } else {
+            alert(answer.errorMsg);
+        }
+    }
+
+    function sendUpdate() {
         $('button.update').click(function () {
             var parentId = $(this).parent().parent().attr('id');
             var oldDescription = $(`#${parentId} .description`).text();
             var descr = prompt("Введите название задачи", oldDescription);
-            $(`#${parentId} .description`).text(descr);
             var request = {
                 id: parentId,
                 description: descr,
                 action: "update"
             }
-            sendJSON(request);
+            sendJSON(request, updateTask);
         });
     }
 
-    function deleteItem() {
+    function updateTask(answer) {
+        if (answer.errorMsg == null) {
+            $(`#${answer.id} .description`).text(answer.description);
+        } else {
+            alert(answer.errorMsg);
+        }
+    }
+
+    function sendDelete() {
         $('button.delete').click(function () {
             if (confirm("Удалить задачу?")) {
                 var parentId = $(this).parent().parent().attr('id');
-                $(`#${parentId}`).remove();
                 var request = {
                     id: parentId,
                     action: "delete"
                 }
-                sendJSON(request);
+                sendJSON(request, deleteTask);
             }
         });
     }
-    function doneItems(){
-        $('button.done').click(function () {
-            if (confirm("Отметить задачу как выполненную?")) {
-                var parentId = $(this).parent().parent().attr('id');
+
+    function deleteTask(answer) {
+        if (answer.errorMsg == null) {
+            $(`#${answer.id}`).remove();
+        } else {
+            alert(answer.errorMsg);
+        }
+    }
+
+    function sendStatus() {
+        $('button.change-status').click(function () {
+            var parentId = $(this).parent().parent().attr('id');
+            var status = $(`#${parentId} button.done`).length >= 1; //true - задача  в работе
+            console.log($(`#${parentId} button.done`).length);
+            console.log(status);
+            var msg = status ? 'Отметить задачу как выполненную?' : 'Отправить заново в работу?';
+            if (confirm(msg)) {
                 var request = {
                     id: parentId,
-                    description : $(`#${parentId} .description`).text(),
-                    done : true,
+                    description: $(`#${parentId} .description`).text(),
+                    done: status,
                     action: "update"
                 }
-                $(`#${parentId} .status`).html(getStatus(request));
-                sendJSON(request);
+                console.log(request);
+                sendJSON(request, doneTask);
             }
         });
     }
-    function actions(){
-        updateItem();
-        deleteItem();
-        doneItems();
+
+    function doneTask(answer) {
+        console.log(getStatus(answer));
+        if (answer.errorMsg == null) {
+            $(`#${answer.id} .status`).replaceWith(getStatus(answer));
+            $(`#${answer.id} .actions`).replaceWith(getActions(answer));
+            actions();
+        } else {
+            alert(answer.errorMsg);
+        }
+    }
+
+    function actions() {
+        sendUpdate();
+        sendDelete();
+        sendStatus();
+
     }
 
     $(document).ready(function () {
         validate();
-        addTask();
-        showAllTasks();
+        sendAdd();
+        getAllTasks();
 
     });
 </script>

@@ -16,3 +16,6 @@
 .form-check-label {
     margin-top: 30px;
 }
+button.open {
+    width: 10rem;
+}
