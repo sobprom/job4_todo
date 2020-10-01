@@ -51,6 +51,23 @@
             });
     }
 
+    function getNotDoneTasks() {
+        $.getJSON("http://localhost:8080/todo/actions")
+            .done(function (json) {
+                var body = "";
+                json.forEach(function callback(value, index, json) {
+                    if (!value.done) {
+                        body += getRow(value);
+                    }
+                });
+                $(body).prependTo($('#tasks'));
+                actions();
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                let err = textStatus + ", " + error;
+            });
+    }
+
     function getRow(value) {
 
         return `<tr id = "${value.id}">`
@@ -120,27 +137,6 @@
         }
     }
 
-    function sendUpdate() {
-        $('button.update').click(function () {
-            var parentId = $(this).parent().parent().attr('id');
-            var oldDescription = $(`#${parentId} .description`).text();
-            var descr = prompt("Введите название задачи", oldDescription);
-            var request = {
-                id: parentId,
-                description: descr,
-                action: "update"
-            }
-            sendJSON(request, updateTask);
-        });
-    }
-
-    function updateTask(answer) {
-        if (answer.errorMsg == null) {
-            $(`#${answer.id} .description`).text(answer.description);
-        } else {
-            alert(answer.errorMsg);
-        }
-    }
 
     function sendDelete() {
         $('button.delete').click(function () {
@@ -162,13 +158,35 @@
             alert(answer.errorMsg);
         }
     }
+    function sendUpdate() {
+        $('button.update').click(function () {
+            var parentId = $(this).parent().parent().attr('id');
+            var oldDescription = $(`#${parentId} .description`).text();
+            var descr = prompt("Введите название задачи", oldDescription);
+            var status = $(`#${parentId} button.done`).length >= 1;
+            var request = {
+                id: parentId,
+                description: descr,
+                done : !status,
+                action: "update"
+            }
+            console.log(request);
+            sendJSON(request, updateTask);
+        });
+    }
+
+    function updateTask(answer) {
+        if (answer.errorMsg == null) {
+            $(`#${answer.id} .description`).text(answer.description);
+        } else {
+            alert(answer.errorMsg);
+        }
+    }
 
     function sendStatus() {
         $('button.change-status').click(function () {
             var parentId = $(this).parent().parent().attr('id');
             var status = $(`#${parentId} button.done`).length >= 1; //true - задача  в работе
-            console.log($(`#${parentId} button.done`).length);
-            console.log(status);
             var msg = status ? 'Отметить задачу как выполненную?' : 'Отправить заново в работу?';
             if (confirm(msg)) {
                 var request = {
@@ -194,6 +212,17 @@
         }
     }
 
+    function showAll() {
+        $('#showAll').click(function () {
+            $('#tasks tr').remove();
+            if ($('#showAll').is(':checked')) {
+                getAllTasks();
+            } else {
+                getNotDoneTasks();
+            }
+        });
+    }
+
     function actions() {
         sendUpdate();
         sendDelete();
@@ -204,8 +233,8 @@
     $(document).ready(function () {
         validate();
         sendAdd();
-        getAllTasks();
-
+        getNotDoneTasks();
+        showAll();
     });
 </script>
 
@@ -228,8 +257,8 @@
     </div>
     <div class="row">
         <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Показать все</label>
+            <input type="checkbox" class="form-check-input" id="showAll">
+            <label class="form-check-label" for="showAll">Показать все</label>
         </div>
         <table class="table table-bordered">
             <thead>
