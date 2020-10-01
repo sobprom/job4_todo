@@ -2,3 +2,4 @@
 <h3>Учебный планировщик.</h3>
 <p>Серверная часть реализована с использованием технологий Hibernate. </p>
 <p> Клиентская часть - jQuery. </p>
+![alt text](https://github.com/sobprom/job4_todo/blob/master/src/main/resources/todo.png)
