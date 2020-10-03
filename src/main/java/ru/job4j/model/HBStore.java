@@ -4,8 +4,8 @@ package ru.job4j.model;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Function;
 
 public class HBStore implements Store {
     private static final Store INSTANCE = new HBStore();
@@ -21,34 +21,17 @@ public class HBStore implements Store {
 
     @Override
     public Item add(Item item) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            final Transaction tx = session.beginTransaction();
-            try {
-                session.save(item);
-                session.getTransaction().commit();
-                session.close();
-            } catch (Exception e) {
-                item.setErrorMsg(e.getMessage());
-                session.getTransaction().rollback();
-            }
-        }
-        return item;
+        return tx(session -> {
+            session.save(item);
+            return item;
+        });
     }
 
     @Override
     public Collection<Item> findAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            final Transaction tx = session.beginTransaction();
-            try {
-                Collection<Item> result = session.createQuery("from ru.job4j.model.Item").list();
-                session.getTransaction().commit();
-                session.close();
-                return result;
-            } catch (Exception e) {
-                session.getTransaction().rollback();
-            }
-        }
-        return new ArrayList<>();
+        return this.tx(
+                session -> session.createQuery("from Item").list()
+        );
     }
 
     @Override
@@ -58,34 +41,32 @@ public class HBStore implements Store {
 
     @Override
     public Item update(Item item) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            final Transaction tx = session.beginTransaction();
-            try {
-                session.update(item);
-                session.getTransaction().commit();
-                session.close();
-            } catch (Exception e) {
-                item.setErrorMsg(e.getMessage());
-                session.getTransaction().rollback();
-            }
-        }
-        return item;
+        return tx(session -> {
+            session.update(item);
+            return item;
+        });
     }
 
     @Override
     public Item delete(Item item) {
+        return tx(session -> {
+            session.delete(item);
+            return item;
+        });
+    }
+
+    private <T> T tx(final Function<Session, T> command) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             final Transaction tx = session.beginTransaction();
             try {
-                session.delete(item);
-                session.getTransaction().commit();
-                session.close();
-            } catch (Exception e) {
-                item.setErrorMsg(e.getMessage());
+                T rsl = command.apply(session);
+                tx.commit();
+                return rsl;
+            } catch (final Exception e) {
                 session.getTransaction().rollback();
+                throw e;
             }
         }
-        return item;
     }
 
     @Override
