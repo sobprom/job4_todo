@@ -3,6 +3,7 @@ package ru.job4j.model;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -36,7 +37,13 @@ public class HBStore implements Store {
 
     @Override
     public Item findById(Item item) {
-        return null;
+        return this.tx(
+                session -> {
+                    final Query<Item> query = session.createQuery("from Item as item where item.id = :id");
+                    query.setParameter("id", item.getId());
+                    return query.getSingleResult();
+                }
+        );
     }
 
     @Override
