@@ -4,7 +4,8 @@ create table if not exists items
     id          serial primary key not null,
     description varchar(255)       not null,
     created     timestamp          not null,
-    done        boolean
+    done        boolean,
+    user_id int not null references users (id)
 );
 drop table if exists roles;
 create table if not exists roles

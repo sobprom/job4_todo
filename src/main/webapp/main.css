@@ -19,3 +19,6 @@
 button.open {
     width: 10rem;
 }
+#registration {
+    float: right;
+}
