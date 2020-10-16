@@ -1,11 +1,12 @@
 package ru.job4j.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.job4j.logic.Dispatcher;
-import ru.job4j.logic.DispatcherImpl;
-import ru.job4j.logic.Validate;
-import ru.job4j.logic.ValidateService;
-import ru.job4j.model.Item;
+import ru.job4j.logic.dispatcher.Dispatcher;
+import ru.job4j.logic.dispatcher.DispatcherImpl;
+import ru.job4j.logic.validate.Validate;
+import ru.job4j.logic.validate.ValidateService;
+import ru.job4j.model.entities.Item;
+import ru.job4j.model.entities.Message;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,10 +24,11 @@ public class TodoServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = new PrintWriter(resp.getOutputStream());
+        Message item = new Item();
         new ObjectMapper()
                 .writeValue(
                         writer,
-                        validate.findAll()
+                        validate.findAll(item)
                 );
         writer.flush();
     }
@@ -36,7 +38,7 @@ public class TodoServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = new PrintWriter(resp.getOutputStream());
-        Item item = new ObjectMapper().readValue(req.getInputStream(), Item.class);
+        Message item = new ObjectMapper().readValue(req.getInputStream(), Item.class);
         new ObjectMapper()
                 .writeValue(
                         writer,

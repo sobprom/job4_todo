@@ -1,9 +1,9 @@
 package ru.job4j.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.job4j.logic.Validate;
-import ru.job4j.logic.ValidateService;
-import ru.job4j.model.Users;
+import ru.job4j.logic.validate.Validate;
+import ru.job4j.logic.validate.ValidateService;
+import ru.job4j.model.entities.Users;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

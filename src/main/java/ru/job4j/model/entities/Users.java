@@ -1,4 +1,4 @@
-package ru.job4j.model;
+package ru.job4j.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Users {
+public class Users extends AbstractMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -27,6 +27,7 @@ public class Users {
         this.role = role;
     }
 
+    @Override
     public int getId() {
         return id;
     }

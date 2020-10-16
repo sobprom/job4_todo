@@ -1,7 +1,7 @@
-package ru.job4j.logic;
+package ru.job4j.logic.validate;
 
 
-import ru.job4j.model.Item;
+import ru.job4j.model.entities.Message;
 
 import java.util.Collection;
 
@@ -10,41 +10,39 @@ import java.util.Collection;
  */
 public interface Validate {
     /**
-     * Adds item to store.
+     * Adds msg to store.
      *
-     * @param item model.
+     * @param msg model.
      * @return if validate is success then returns stored model, else returns null.
      */
-    Item add(Item item);
+    Message add(Message msg);
 
-    /**
-     * Finds all items.
-     *
-     * @return list of all items.
-     */
-    Collection<Item> findAll();
 
     /**
      * Finds model by id.
      *
-     * @param item item.
-     * @return item was founded.
+     * @param msg msg.
+     * @return msg was founded.
      */
-    Item findById(Item item);
+    Message findByName(Message msg);
 
     /**
      * Updates the item in store. If not exists then adds to store.
      *
-     * @param item new item.
+     * @param msg new item.
      * @return model was updated.
      */
-    Item update(Item item);
+    Message update(Message msg);
 
     /**
      * Deletes the item from store.
      *
-     * @param item item.
+     * @param msg item.
      * @return item was deleted. If not exists return null.
      */
-    Item delete(Item item);
+    Message delete(Message msg);
+
+    Collection<Message> findAll(Message msg);
+
+    Message findById(Message msg);
 }

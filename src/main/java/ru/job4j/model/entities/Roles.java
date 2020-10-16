@@ -1,4 +1,4 @@
-package ru.job4j.model;
+package ru.job4j.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

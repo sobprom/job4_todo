@@ -1,15 +1,18 @@
-package ru.job4j.logic;
+package ru.job4j.logic.dispatcher;
 
-import ru.job4j.model.Item;
+import ru.job4j.logic.validate.Validate;
+import ru.job4j.logic.validate.ValidateService;
+import ru.job4j.model.entities.Message;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class DispatcherImpl implements Dispatcher {
     private static final Dispatcher DISPATCHER = new DispatcherImpl();
     private final Validate validate = ValidateService.getInstance();
-    private final Map<String, Function<Item, Item>> dispatch = new ConcurrentHashMap<>();
+    private final Map<String, Function<Message, Message>> dispatch = new ConcurrentHashMap<>();
 
     private DispatcherImpl() {
         init();
@@ -19,6 +22,7 @@ public class DispatcherImpl implements Dispatcher {
         this.load("update", validate::update);
         this.load("add", validate::add);
         this.load("delete", validate::delete);
+        this.load("findByName", validate::findByName);
         this.load("findById", validate::findById);
     }
 
@@ -26,22 +30,19 @@ public class DispatcherImpl implements Dispatcher {
         return DISPATCHER;
     }
 
-    public void load(String type, Function<Item, Item> handle) {
+    public void load(String type, Function<Message, Message> handle) {
         this.dispatch.put(type, handle);
     }
 
-    public Map<String, Function<Item, Item>> getDispatch() {
+    public Map<String, Function<Message, Message>> getDispatch() {
         return dispatch;
     }
 
     @Override
-    public Item apply(Item item) {
-        Item rsl = new Item();
-        if (getDispatch().get(item.getAction()) != null) {
-            rsl = getDispatch().get(item.getAction()).apply(item);
-        } else {
-            rsl.setErrorMsg("Illegal action name");
+    public Message apply(Message message) {
+        if (getDispatch().containsKey(message.getAction())) {
+            return getDispatch().get(message.getAction()).apply(message);
         }
-        return rsl;
+        throw new NoSuchElementException();
     }
 }

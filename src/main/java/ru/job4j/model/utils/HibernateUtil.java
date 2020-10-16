@@ -1,4 +1,4 @@
-package ru.job4j.model;
+package ru.job4j.model.utils;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;

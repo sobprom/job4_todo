@@ -1,4 +1,4 @@
-package ru.job4j.model;
+package ru.job4j.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -7,8 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Objects;
@@ -16,10 +17,14 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "items")
-public class Item {
+public class Item extends AbstractMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
 
     @Column(name = "description")
     private String description;
@@ -30,19 +35,21 @@ public class Item {
     @Column(name = "done")
     private boolean done;
 
-    @Transient
-    private String errorMsg;
-
-    @Transient
-    private String action;
-
-
-    public Item(String description) {
+    public Item(Users user, String description) {
+        this.user = user;
         this.description = description;
     }
 
     public Item() {
 
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     public String getDescription() {
@@ -69,28 +76,13 @@ public class Item {
         this.done = done;
     }
 
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
+    @Override
     public int getId() {
         return id;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
     }
 
     @Override
