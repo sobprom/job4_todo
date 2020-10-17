@@ -1,5 +1,6 @@
 package ru.job4j.logic.validate;
 
+import ru.job4j.logic.validate.utils.ErrorCodes;
 import ru.job4j.model.crud.HBStore;
 import ru.job4j.model.crud.Store;
 import ru.job4j.model.entities.Message;

@@ -3,7 +3,7 @@ package ru.job4j.model.crud;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import ru.job4j.logic.validate.ErrorCodes;
+import ru.job4j.logic.validate.utils.ErrorCodes;
 import ru.job4j.model.entities.Item;
 import ru.job4j.model.entities.Message;
 import ru.job4j.model.utils.HibernateUtil;
