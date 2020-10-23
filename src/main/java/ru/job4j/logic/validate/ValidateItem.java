@@ -1,5 +1,6 @@
 package ru.job4j.logic.validate;
 
+import ru.job4j.logic.validate.utils.ErrorCodes;
 import ru.job4j.model.entities.Item;
 import ru.job4j.model.entities.Message;
 
@@ -19,7 +20,7 @@ public class ValidateItem extends AbstractValidate {
     public Message add(Message msg) {
         Item item = (Item) msg;
         return item.getDescription() == null || item.getDescription().isBlank()
-                ? item.setErrorMsg("Empty description")
+                ? item.setErrorMsg(ErrorCodes.EMPTY_ITEM_DESCRIPTION)
                 : getStore().add(msg);
     }
 
@@ -29,13 +30,12 @@ public class ValidateItem extends AbstractValidate {
         return item.getDescription() == null
                 || item.getDescription().isBlank()
                 || item.getId() < 0
-                ? item.setErrorMsg("Empty description or illegal id")
+                ? item.setErrorMsg(ErrorCodes.EMPTY_ITEM_DESCRIPTION)
                 : getStore().update(msg);
     }
 
     @Override
     public Message findByName(Message msg) {
-        throw new UnsupportedOperationException("Not supported");
+        return msg.setErrorMsg(ErrorCodes.UNSUPPORTED_ACTION);
     }
-
 }

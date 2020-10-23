@@ -8,4 +8,8 @@ public interface Message {
     int getId();
 
     String getAction();
+
+    void setParameter(String name, Object obj);
+
+    Object getParameter(String name);
 }

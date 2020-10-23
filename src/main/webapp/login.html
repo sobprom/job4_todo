@@ -34,27 +34,36 @@
     function login() {
         $('#auth').click(function () {
             var request = {
-                login: $('#login').val(),
-                password: $('#password').val()
+                name: $('#login').val(),
+                password: $('#password').val(),
+                action : 'auth'
             }
             sendJSON(request, loginSuccess);
         });
     }
 
     function loginSuccess(answer) {
-        window.location.href = 'index.html';
+        alert(answer.errorMsg);
+        if(answer.errorMsg !== ''){
+            alert("Ошибка авторизации" + answer.errorMsg);
+        } else {
+            window.location.href = 'index.html';
+        }
     }
 
     function sendJSON(request, func) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
+            if (this.readyState == 4 ) {
                 func(JSON.parse(this.responseText))
             }
         };
         xhttp.open("POST", "http://localhost:8080/todo/auth", true);
         xhttp.setRequestHeader("Content-type", "application/json");
+        console.log(JSON.stringify(request));
         xhttp.send(JSON.stringify(request));
+
+
 
     }
 

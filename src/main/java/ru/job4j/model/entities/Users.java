@@ -14,6 +14,7 @@ public class Users extends AbstractMessage {
     private int id;
 
     private String name;
+    private String password;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -34,6 +35,14 @@ public class Users extends AbstractMessage {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {

@@ -1,6 +1,7 @@
 package ru.job4j.model.crud;
 
 import org.hibernate.query.Query;
+import ru.job4j.logic.validate.utils.ErrorCodes;
 import ru.job4j.model.entities.Message;
 import ru.job4j.model.entities.Users;
 
@@ -34,8 +35,12 @@ public class StoreUser extends AbstractStore {
                     final Query<Users> query = session.createQuery(
                             "from Users as usr where usr.name = :name"
                     );
-                    query.setParameter("name",  ((Users) msg).getName());
-                    return query.getSingleResult();
+                    query.setParameter("name", ((Users) msg).getName());
+                    try {
+                        return query.getSingleResult();
+                    } catch (Exception e) {
+                        return msg.setErrorMsg(ErrorCodes.USER_NO_FINDS);
+                    }
                 }
         );
     }

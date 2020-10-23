@@ -1,5 +1,7 @@
 package ru.job4j.logic.validate.controller;
 
+import ru.job4j.logic.validate.auth.Auth;
+import ru.job4j.logic.validate.auth.AuthImpl;
 import ru.job4j.logic.validate.json.UserParser;
 import ru.job4j.model.entities.Message;
 
@@ -10,6 +12,8 @@ import java.io.IOException;
 public class UserController extends AbstractController {
     private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserController.class);
     private static final Controller INSTANCE = new UserController();
+    private static  Auth auth = AuthImpl.getInstance();
+
 
     private UserController() {
     }
@@ -21,6 +25,7 @@ public class UserController extends AbstractController {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Message user = UserParser.getInstance().apply(req);
+        user.setParameter("session", req.getSession());
         try {
             writeJsonObject(req, resp, user);
         } catch (IOException e) {

@@ -11,6 +11,14 @@
         <servlet-name>TodoServlet</servlet-name>
         <url-pattern>/actions</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>ru.job4j.presentation.AuthServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>ru.job4j.presentation.AuthFilter</filter-class>

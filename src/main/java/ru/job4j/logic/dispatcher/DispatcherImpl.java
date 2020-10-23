@@ -4,10 +4,10 @@ import ru.job4j.logic.validate.Validate;
 import ru.job4j.logic.validate.ValidateService;
 import ru.job4j.logic.validate.auth.Auth;
 import ru.job4j.logic.validate.auth.AuthImpl;
+import ru.job4j.logic.validate.utils.ErrorCodes;
 import ru.job4j.model.entities.Message;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -44,9 +44,9 @@ public class DispatcherImpl implements Dispatcher {
 
     @Override
     public Message apply(Message message) {
-        if (getDispatch().containsKey(message.getAction())) {
+        if (message.getAction() != null && getDispatch().containsKey(message.getAction())) {
             return getDispatch().get(message.getAction()).apply(message);
         }
-        throw new NoSuchElementException();
+        return message.setErrorMsg(ErrorCodes.UNSUPPORTED_ACTION);
     }
 }
