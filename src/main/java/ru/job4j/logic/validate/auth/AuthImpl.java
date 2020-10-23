@@ -21,8 +21,8 @@ public class AuthImpl implements Auth {
     @Override
     public Message auth(Message msg) {
         Users user = (Users) validate.findByName(msg);
-        if (user.getErrorMsg() == null) {
-            HttpSession sc = (HttpSession) user.getParameter("session");
+        if (user.getErrorMsg().isEmpty()) {
+            HttpSession sc = (HttpSession) msg.getParameter("session");
             sc.setAttribute("user", user.getName());
         }
         return user;
