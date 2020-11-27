@@ -24,27 +24,27 @@
     function validate() {
         $(".form-check-input").keyup(function () {
             if (!($("#login").val() === "") && !($("#password").val() === "")) {
-                $("#auth").prop('disabled', false);
+                $("#registration").prop('disabled', false);
             } else {
-                $("#auth").prop('disabled', true);
+                $("#registration").prop('disabled', true);
             }
         });
     }
 
-    function login() {
-        $('#auth').click(function () {
+    function registration() {
+        $('#registration').click(function () {
             var request = {
                 user: {
                     password: $('#password').val(),
                     name: $('#login').val()
                 },
-                action: 'login'
+                action: 'registration'
             }
-            sendJSON(request, loginSuccess);
+            sendJSON(request, registrationSuccess);
         });
     }
 
-    function loginSuccess(answer) {
+    function registrationSuccess(answer) {
         console.log(answer);
         if (answer.errorMsg !== '') {
             alert("Ошибка авторизации" + answer.errorMsg);
@@ -67,23 +67,22 @@
 
 
     }
-
-    function registration() {
-        $('#registration').click(function () {
-            window.location.href = 'registration.html';
+    function back(){
+        $('#back').click(function () {
+            window.location.href = 'login.html';
         });
     }
 
     $(document).ready(function () {
         validate();
-        login();
         registration();
+        back();
     });
 </script>
 
 <div class="container">
     <div class="row">
-        <h3>Авторизуйтесь</h3>
+        <h3>Регистрация</h3>
     </div>
     <div class="row">
         <form class="form-check-input">
@@ -96,11 +95,11 @@
                 <input type="password" class="form-control" id="password">
             </div>
             <div class="form-group">
-                <button type="button" class="btn btn-success" id="auth" disabled>
-                    <span class="glyphicon glyphicon-log-in"></span>
-                    Войти
+                <button type="button" class="btn btn-success" id="back" >
+                    <span class="glyphicon glyphicon-backward"></span>
+                    Назад
                 </button>
-                <button type="button" class="btn btn-success" id="registration">
+                <button type="button" class="btn btn-success" id="registration" disabled>
                     <span class="glyphicon glyphicon-user"></span>
                     Зарегестрироваться
                 </button>

@@ -36,32 +36,20 @@
 
     }
 
-    function getAllTasks() {
+    function getAllTasks(onlyNotDone) {
         $.getJSON("http://localhost:8080/todo/actions")
             .done(function (json) {
                 var body = "";
-                json.forEach(function callback(value, index, json) {
-                    body += getRow(value);
-                });
-                $(body).prependTo($('#tasks'));
-                actions();
-            })
-            .fail(function (jqxhr, textStatus, error) {
-                let err = textStatus + ", " + error;
-            });
-    }
-
-    function getNotDoneTasks() {
-        $.getJSON("http://localhost:8080/todo/actions")
-            .done(function (json) {
-                var body = "";
-                json.forEach(function callback(value, index, json) {
-                    if (!value.done) {
+                json.user.items.forEach(function callback(value, index, json) {
+                    if (onlyNotDone) {
+                        body += getRow(value);
+                    } else if (!value.done) {
                         body += getRow(value);
                     }
                 });
                 $(body).prependTo($('#tasks'));
                 actions();
+                logout(json.user.name);
             })
             .fail(function (jqxhr, textStatus, error) {
                 let err = textStatus + ", " + error;
@@ -118,20 +106,42 @@
         });
     }
 
-    function sendAdd() {
-        $('#taskAdd').click(function () {
+    function logout(user) {
+        $("#logout").prop('disabled', false);
+        $("#userName").text(user);
+        $('#logout').click(function () {
             var request = {
-                description: $('#taskName').val(),
-                action: "add"
+                action: "logout"
             }
-            sendJSON(request, addTask);
+            sendJSON(request, exit);
         });
     }
 
+    function exit() {
+        window.location.href = 'login.html';
+    }
+
+    function sendAdd() {
+        $('#taskAdd').click(function () {
+                var request = {
+                    user: {
+                        items: [{
+                            description: $('#taskName').val()
+                        }]
+                    },
+                    action: "add"
+                }
+                sendJSON(request, addTask);
+            }
+        );
+    }
+
     function addTask(answer) {
-        if (answer.errorMsg == null) {
-            $('#tasks').append(getRow(answer));
+        if (answer.errorMsg === '') {
+            console.log(answer.user.items[0]);
+            $('#tasks').append(getRow(answer.user.items[0]));
             actions();
+            alert("Вы успешно добавили событие");
         } else {
             alert(answer.errorMsg);
         }
@@ -143,7 +153,11 @@
             if (confirm("Удалить задачу?")) {
                 var parentId = $(this).parent().parent().attr('id');
                 var request = {
-                    id: parentId,
+                    user: {
+                        items: [{
+                            id: parentId
+                        }]
+                    },
                     action: "delete"
                 }
                 sendJSON(request, deleteTask);
@@ -152,12 +166,13 @@
     }
 
     function deleteTask(answer) {
-        if (answer.errorMsg == null) {
-            $(`#${answer.id}`).remove();
+        if (answer.errorMsg === '') {
+            $(`#${answer.user.items[0].id}`).remove();
         } else {
             alert(answer.errorMsg);
         }
     }
+
     function sendUpdate() {
         $('button.update').click(function () {
             var parentId = $(this).parent().parent().attr('id');
@@ -165,9 +180,13 @@
             var descr = prompt("Введите название задачи", oldDescription);
             var status = $(`#${parentId} button.done`).length >= 1;
             var request = {
-                id: parentId,
-                description: descr,
-                done : !status,
+                user: {
+                    items: [{
+                        id: parentId,
+                        description: descr,
+                        done: !status
+                    }]
+                },
                 action: "update"
             }
             console.log(request);
@@ -176,8 +195,10 @@
     }
 
     function updateTask(answer) {
-        if (answer.errorMsg == null) {
-            $(`#${answer.id} .description`).text(answer.description);
+        if (answer.errorMsg === '') {
+            $(`#${answer.user.items[0].id} .description`).text(
+                answer.user.items[0].description
+            );
         } else {
             alert(answer.errorMsg);
         }
@@ -190,9 +211,13 @@
             var msg = status ? 'Отметить задачу как выполненную?' : 'Отправить заново в работу?';
             if (confirm(msg)) {
                 var request = {
-                    id: parentId,
-                    description: $(`#${parentId} .description`).text(),
-                    done: status,
+                    user: {
+                        items: [{
+                            id: parentId,
+                            description: $(`#${parentId} .description`).text(),
+                            done: status
+                        }]
+                    },
                     action: "update"
                 }
                 console.log(request);
@@ -202,11 +227,13 @@
     }
 
     function doneTask(answer) {
-        console.log(getStatus(answer));
-        if (answer.errorMsg == null) {
-            $(`#${answer.id} .status`).replaceWith(getStatus(answer));
-            $(`#${answer.id} .actions`).replaceWith(getActions(answer));
+        if (answer.errorMsg === '') {
+            $(`#${answer.user.items[0].id} .status`).replaceWith(getStatus(answer.user.items[0]));
+            $(`#${answer.user.items[0].id} .actions`).replaceWith(getActions(answer.user.items[0]));
             actions();
+            if (!($('#showAll').is(':checked'))) {
+                $(`#${answer.user.items[0].id}`).remove();
+            }
         } else {
             alert(answer.errorMsg);
         }
@@ -215,11 +242,7 @@
     function showAll() {
         $('#showAll').click(function () {
             $('#tasks tr').remove();
-            if ($('#showAll').is(':checked')) {
-                getAllTasks();
-            } else {
-                getNotDoneTasks();
-            }
+            getAllTasks(($('#showAll').is(':checked')));
         });
     }
 
@@ -233,12 +256,22 @@
     $(document).ready(function () {
         validate();
         sendAdd();
-        getNotDoneTasks();
+        getAllTasks(false);
         showAll();
     });
 </script>
 
+<div class="container">
+    <div class="row" align="right">
+        <span id="userName">
 
+        </span>
+        <button type="button" class="btn btn-link" id="logout" disabled>
+            <span class="glyphicon glyphicon-off"></span>
+            Выйти
+        </button>
+    </div>
+</div>
 <h3 align="center">
     Планировщик.
 </h3>

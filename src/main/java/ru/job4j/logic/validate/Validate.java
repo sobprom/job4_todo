@@ -1,48 +1,61 @@
 package ru.job4j.logic.validate;
 
 
-import ru.job4j.model.entities.Message;
+import ru.job4j.model.entities.Dto;
 
-import java.util.Collection;
 
 /**
- * Logic layer validates required fields before to put it to store.
+ * Validates the required fields before to put Entity to store.
  */
 public interface Validate {
     /**
-     * Adds msg to store.
+     * Validate the dto -> User before adds it to the store.
      *
-     * @param msg model.
-     * @return if validate is success then returns stored model, else returns null.
+     * @param dto -> User.
+     * @return if validate is success then returns stored User,
+     * else returns dto with error message.
      */
-    Message add(Message msg);
+    Dto add(Dto dto);
 
 
     /**
-     * Finds model by id.
+     * Validates dto -> User before finds it by name in to the store.
      *
-     * @param msg msg.
-     * @return msg was founded.
+     * @param dto -> User.
+     * @return dto with User founded.
      */
-    Message findByName(Message msg);
+    Dto findByName(Dto dto);
 
     /**
-     * Updates the item in store. If not exists then adds to store.
+     * Validates the dto -> User before updates it in the store.
      *
-     * @param msg new item.
-     * @return model was updated.
+     * @param dto -> User.
+     * @return dto with User updated.
      */
-    Message update(Message msg);
+    Dto update(Dto dto);
 
     /**
-     * Deletes the item from store.
+     * Validates the dto -> User before deletes it from the store.
      *
-     * @param msg item.
-     * @return item was deleted. If not exists return null.
+     * @param dto -> User.
+     * @return dto with User deleted.
      */
-    Message delete(Message msg);
+    Dto delete(Dto dto);
 
-    Collection<Message> findAll(Message msg);
+    /**
+     * Validates the dto -> before finds User by dto -> id in to the store.
+     *
+     * @param dto -> id.
+     * @return dto with User founded.
+     */
+    Dto findById(Dto dto);
 
-    Message findById(Message msg);
+    /**
+     * Validates the dto -> User before registration new dto -> User in to the store.
+     *
+     * @param dto -> User.
+     * @return dto with User registered.
+     */
+    Dto registration(Dto dto);
+
 }

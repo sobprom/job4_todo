@@ -1,7 +1,7 @@
 package ru.job4j.presentation;
 
-import ru.job4j.logic.validate.controller.Controller;
-import ru.job4j.logic.validate.controller.UserController;
+import ru.job4j.logic.controller.Controller;
+import ru.job4j.logic.controller.UserController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

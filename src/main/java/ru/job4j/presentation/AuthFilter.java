@@ -1,5 +1,7 @@
 package ru.job4j.presentation;
 
+import ru.job4j.logic.utils.Constants;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -21,14 +23,19 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         String uri = req.getRequestURI();
-        if (uri.endsWith("/auth") || uri.endsWith(".css")) {
+        if (uri.endsWith("/auth")
+                || uri.endsWith(".css")
+                || uri.endsWith("login.html")
+                || uri.endsWith("registration.html")
+        ) {
             chain.doFilter(req, resp);
             return;
         }
-        if (req.getSession().getAttribute("user") == null) {
-            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no login");
+        if (req.getSession().getAttribute(Constants.USER) == null) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "");
+        } else {
+            chain.doFilter(req, resp);
         }
-        chain.doFilter(req, resp);
     }
 
     @Override

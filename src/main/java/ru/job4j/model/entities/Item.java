@@ -1,30 +1,32 @@
 package ru.job4j.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Objects;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "items")
-public class Item extends AbstractMessage {
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
 
     @Column(name = "description")
     private String description;
@@ -35,8 +37,12 @@ public class Item extends AbstractMessage {
     @Column(name = "done")
     private boolean done;
 
-    public Item(Users user, String description) {
-        this.user = user;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Item(String description) {
+
         this.description = description;
     }
 
@@ -44,11 +50,14 @@ public class Item extends AbstractMessage {
 
     }
 
-    public Users getUser() {
-        return user;
+    public void update(Item item) {
+        this.description = item.getDescription();
+        this.done = item.isDone();
+        this.user = item.getUser();
+        this.created = item.getCreated();
     }
 
-    public void setUser(Users user) {
+    public Item(User user) {
         this.user = user;
     }
 
@@ -80,9 +89,17 @@ public class Item extends AbstractMessage {
         this.id = id;
     }
 
-    @Override
+
     public int getId() {
         return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -94,10 +111,7 @@ public class Item extends AbstractMessage {
             return false;
         }
         Item item = (Item) o;
-        return id == item.id
-                && done == item.done
-                && Objects.equals(description, item.description)
-                && Objects.equals(created, item.created);
+        return id == item.id;
     }
 
     @Override
